@@ -24,8 +24,8 @@ extension ViewController: MKMapViewDelegate {
                 view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
                 view.canShowCallout = true
                 view.calloutOffset = CGPoint(x: -5, y: 5)
-                view.tintColor = UIColor(colorLiteralRed: 33.0/255.0, green: 160.0/255.0, blue: 100.0/255.0, alpha: 1.0)
-                view.pinTintColor = UIColor(colorLiteralRed: 33.0/255.0, green: 160.0/255.0, blue: 100.0/255.0, alpha: 1.0)
+                view.tintColor = annotation.pinColour()
+                view.pinTintColor = annotation.pinColour()
                 
                 let detailButton = UIButton(type: .detailDisclosure) as UIView
                 view.rightCalloutAccessoryView = detailButton

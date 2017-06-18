@@ -15,13 +15,15 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var mapView: MKMapView!//MapView
     
+    var nests = [PokeNest]()
+    let pokeNest = PokeNest(pokemonName: "", pokedexEntry: 0, pokemonType: "", coordinate: CLLocationCoordinate2DMake(10, 10), nestVerified: false)
+    
     enum ReadError: Error {
         case fileNotFound(String)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadInitialData()
         
         //Set initial map location to York
         let initialLocation = CLLocation(latitude: 53.960024, longitude: -1.087152)
@@ -37,18 +39,29 @@ class ViewController: UIViewController {
         
         mapView.delegate = self
         
-        let nest = PokeNest(pokemonName: "Exeggcute", pokedexEntry: 102, coordinate: CLLocationCoordinate2D(latitude: 53.961350, longitude: -1.088290), nestVerified: true)
-        mapView.addAnnotation(nest)
+        try? loadInitialData()
+        mapView.addAnnotations(nests)
     }
     
     //Helper function to load initial data
-    func loadInitialData(){
-        let filePath = Bundle.main.path(forResource: "NestData", ofType: "json")
-        let contentData = FileManager.default.contents(atPath: filePath!)
-        let content = NSString(data: contentData!, encoding: String.Encoding.utf8.rawValue) as String?
-        print(content!)
+    func loadInitialData() throws {
+        let fileName = Bundle.main.path(forResource: "NestData", ofType: "json")
+        var jsonData: Data = Data()
+    
+        if let locatedFile = fileName {
+            jsonData = try Data(contentsOf: URL(fileURLWithPath: locatedFile))
+        }
         
-        print(JSONSerialization.isValidJSONObject(content))
+        if let allNests = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any]{
+            if let nests = allNests["nest"] as? [[String: Any]]{
+                //Cycle through nest entries and access elements
+                for jsonNest in nests{
+                    self.nests.append(pokeNest.extractNestsFromJSON(json: jsonNest))
+                }
+            }
+
+        }
+        
     }
 }
 
