@@ -40,19 +40,19 @@ class PokeNest: NSObject, MKAnnotation {
     
     //Function to extract data from the JSON file
     func extractNestsFromJSON(json: [String: Any]) throws -> PokeNest? {
-        guard let nest = json["nest"] as? [String:Any] else {
+        if let nest = json["nest"] as? [String:Any] {
            throw SerialisationError.missing("nest")
         }
         
-        guard let latitude = nest["latitude"] as? Double, let longitude = nest["longitude"] as? Double else {
+        if let latitude = nest["latitude"] as? Double, let longitude = nest["longitude"] as? Double {
            throw SerialisationError.missing("no coordinates")
         }
         
-        guard let pokemonName = nest["pokemon"] as? String, let pokedexEntry = nest["pokedexEntry"] as? Int else {
+        if let pokemonName = nest["pokemon"] as? String, let pokedexEntry = nest["pokedexEntry"] as? Int {
             throw SerialisationError.missing("pokemon")
         }
         
-        guard let verified = nest["verified"] as? Bool  else {
+        if let verified = nest["verified"] as? Bool {
             throw SerialisationError.missing("Nest Verified")
         }
         
